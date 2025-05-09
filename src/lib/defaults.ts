@@ -85,3 +85,29 @@ export const APP_PAGES: AppPages[] = [
     id: 'register'
   }
 ]
+
+
+//TESTING
+export const TIMESHEETS_TAB: AppPages[] = [
+  {
+    resource: 'settings',
+    href: "#clock-in",
+    title: "Clock In",
+    icon: 'timer',
+    id: 'clock-in',
+  },
+  {
+    resource: 'settings',
+    href: "#access",
+    title: "Access",
+    icon: 'admin_panel_settings',
+    id: 'access'
+  },
+  {
+    resource: 'settings',
+    href: "#alias",
+    title: 'Alias',
+    icon: 'domino_mask',
+    id: 'alias',
+  }
+]
