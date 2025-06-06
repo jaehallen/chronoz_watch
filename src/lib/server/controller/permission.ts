@@ -1,34 +1,54 @@
-import type { UserAction, User } from "$lib/app-types"
-
+import type { UserAction, PermissionAction, User } from "$lib/app-types"
+export type PermissionResource = string | string[] | URL;
+const pathnameToDots = (pathname: string): string => pathname.split('/').filter(Boolean).join('.');
+const ACTIONS_MAP: Record<UserAction, PermissionAction> = {
+  create: 'canCreate',
+  read: 'canRead',
+  update: 'canUpdate',
+  delete: 'canDelete'
+}
 export class UserAccess {
   private user: User | null;
-  private _resource: string[] | string = ""
+  private _resource: string[] = []
 
-  constructor(user: User | null, resource?: string[] | string) {
+  constructor(user: User | null) {
     if (!user) {
       throw new Error("User can't be empty");
     }
+
     this.user = user;
-    this._resource = resource || "";
   }
 
   get resource() {
     return this._resource;
   }
 
-  set resource(newResource: string | string[]) {
-    if (!newResource?.length) {
-      throw new Error("Resource cannot be empty");
+  public validateResource(val: PermissionResource | undefined | null): string[] {
+    if (!val) {
+      return [];
     }
 
-    this._resource = newResource;
+    if (typeof val === 'string') {
+      const trimmed = val.trim();
+      return trimmed ? [trimmed] : [];
+    }
+
+    if (Array.isArray(val)) {
+      return val
+        .map(v => v.trim())
+        .filter(v => v.length > 0);
+    }
+
+    if (val instanceof URL) {
+      const parsed = pathnameToDots(val.pathname).trim();
+      return parsed ? [parsed] : [];
+    }
+
+    return [];
   }
 
-  public checkPermission(action: UserAction, resource?: string | string[]) {
-    resource = resource || this._resource;
-    if (!resource?.length) {
-      return false
-    }
+  public checkPermission(action: UserAction, refResource?: string | string[] | URL) {
+    this._resource = this.validateResource(refResource)
 
     if (!this.user) {
       throw new Error("User can't be empty")
@@ -37,25 +57,26 @@ export class UserAccess {
     if (!this.user.permissions) {
       return false
     }
-    
-    const permissions = this.user.permissions;
 
-    return Array.isArray(resource) ? resource.some((r: string) => !!permissions[r]?.[action]) : permissions[resource]?.[action]
+    const permissions = this.user.permissions;
+    const permAction = ACTIONS_MAP[action];
+
+    return this._resource.some((r: string) => !!permissions[r]?.[permAction])
   }
 
-  public canView(resource?: string | string[]) {
+  public canView(resource?: PermissionResource) {
     return this.checkPermission('read', resource)
   }
 
-  public canCreate(resource?: string | string[]) {
+  public canCreate(resource?: PermissionResource) {
     return this.checkPermission('create', resource)
   }
 
-  public canUpdate(resource?: string | string[]) {
+  public canUpdate(resource?: PermissionResource) {
     return this.checkPermission('update', resource)
   }
 
-  public canDelete(resource?: string | string[]) {
+  public canDelete(resource?: PermissionResource) {
     return this.checkPermission('delete', resource)
   }
 }

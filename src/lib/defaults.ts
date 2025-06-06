@@ -1,51 +1,81 @@
-import type { AppPages} from "./app-types";
+import type { AppPages } from "./app-types";
 
 //DICEBREAR LINK FOR AVATAR
 export const AVATAR_SRC = 'https://api.dicebear.com/9.x/initials/svg?seed=Jessica&radius=50&fontWeight=900';
 
-export const OPTIONS_LIST: AppPages[] = [
+export const OPTIONS_TAB: AppPages<'jobs' | 'departments' | 'roles' | 'time_events'>[] = [
   {
-    resource: 'settings',
+    resource: 'settings.options',
     id: 'jobs',
     href: '#jobs',
     title: "Jobs",
+    icon: 'work',
+    formId: "formapp-jobs",
+    formAction: {
+      create: "?/create-jobs",
+      update: "?/update-jobs"
+    }
   },
   {
-    resource: 'settings',
+    resource: 'settings.options',
     id: 'departments',
     href: "#departments",
     title: 'Departments',
+    icon: 'apartment',
+    formId: `formapp-departments`,
+    formAction: {
+      create: `?/create-departments`,
+      update: `?/update-departments`
+    }
   },
   {
-    resource: 'settings',
+    resource: 'settings.options',
     id: 'roles',
     href: '#roles',
     title: 'Roles',
+    icon: 'supervisor_account',
+    formId: `formapp-roles`,
+    formAction: {
+      create: `?/create-roles`,
+      update: `?/update-roles`
+    }
+  },
+  {
+    resource: 'settings.options',
+    id: 'time_events',
+    href: '#time_events',
+    title: "Time Events",
+    icon: 'timer',
+    formId: "formapp-time_events",
+    formAction: {
+      create: "?/create-time_events",
+      update: "?/update-time_events"
+    }
   },
 ]
 
-export const SETTINGS_TAB: AppPages[] = [
+export const SETTING_PAGES: AppPages[] = [
   {
-    resource: 'settings',
-    href: "#options",
+    resource: 'settings.options',
+    href: "/settings/options",
     title: "Options",
     icon: 'playlist_add',
     id: 'options',
   },
   {
-    resource: 'settings',
-    href: "#access",
+    resource: 'settings.access',
+    href: "/settings/access",
     title: "Access",
     icon: 'admin_panel_settings',
     id: 'access'
   },
   {
-    resource: 'settings',
-    href: "#alias",
+    resource: 'settings.alias',
+    href: "/settings/alias",
     title: 'Alias',
     icon: 'domino_mask',
     id: 'alias',
-  }
+  },
 ]
 
 export const APP_PAGES: AppPages[] = [
@@ -71,13 +101,6 @@ export const APP_PAGES: AppPages[] = [
     id: 'users',
   },
   {
-    resource: "settings",
-    href: "/settings",
-    title: "Settings",
-    icon: 'settings',
-    id: 'settings',
-  },
-  {
     resource: "register",
     href: "/register",
     title: "Register",
@@ -85,3 +108,4 @@ export const APP_PAGES: AppPages[] = [
     id: 'register'
   }
 ]
+

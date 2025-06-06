@@ -15,6 +15,7 @@ const SESSION_NAME = env.SESSION_NAME || "chronoz_session";
 export type SessionValidationResult = { session: Session; user: User } | { session: null; user: null };
 
 type DatabaseClientType = typeof db;
+
 class SessionController {
   private static instance: SessionController;
   private db: DatabaseClientType;
@@ -67,7 +68,7 @@ class SessionController {
           with: {
             role: { columns: { code: true } },
             permissions: {
-              columns: { create: true, read: true, update: true, delete: true },
+              columns: { canCreate: true, canRead: true, canUpdate: true, canDelete: true },
               with: {
                 resource: {
                   columns: { code: true }
@@ -138,11 +139,11 @@ class SessionController {
 function _toUser(data: Record<string, any>): User {
 
   const permissions = data.permissions.reduce((obj: { [x: string]: any; }, perm: { [x: string]: any; resource: any; }) => {
-    const {resource, ...actions} = perm;
-    obj[resource.code] = actions; 
+    const { resource, ...actions } = perm;
+    obj[resource.code] = actions;
     return obj
-  },{})
-  
+  }, {})
+
   return {
     id: data.id,
     active: data.active,

@@ -1,23 +1,34 @@
+import type { OptionsBaseTable } from "$lib/app-types";
 
-export interface TableHeader<T> {
+interface TableColumn<T> {
   key: keyof T;
-  name: string | ((val: keyof T) => string);
+  name: string;
 }
 
-export class SettingsOptionsTable<T> {
-  private data: T[] = $state<T[]>([]);
-  private tblHeader: TableHeader<T>[] ;
+export class SettingsOptionsTable<T extends OptionsBaseTable> {
+  private _columns: TableColumn<T>[] = [];
+  private _data: T[];
+  private _rows: T[keyof T][][];
 
-  constructor(data: T[], headers: TableHeader<T>[]){
-    this.data = data;
-    this.tblHeader = headers;
+  constructor(data: T[], header: TableColumn<T>[]) {
+    this._columns = header;
+    this._data = $state(data);
+    this._rows = this.parseTableRows(data);
   }
 
-  public rows(): T[] {
-    return this.data;
+  private parseTableRows(data: T[]): T[keyof T][][] {
+    return data.map(row => this._columns.map(col => row[col.key]))
   }
 
-  public headers(): TableHeader<T>[] {
-    return this.tblHeader;
+  get data(): T[]{
+    return this._data
+  }
+
+  get columns(): TableColumn<T>[]{
+    return this._columns;
+  }
+
+  get rows(): T[keyof T][][]{
+    return this._rows;
   }
 }

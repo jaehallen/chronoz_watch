@@ -50,10 +50,10 @@ export const tblResources = sqliteTable("resources", {
 export const tblRolePermissions = sqliteTable("role_permissions", {
   roleId: integer().references(() => tblRoles.id, { onDelete: "cascade" }),
   resourceId: integer().references(() => tblResources.id, { onDelete: "cascade" }),
-  create: integer({ mode: "boolean" }).default(false).notNull(),
-  read: integer({ mode: "boolean" }).default(false).notNull(),
-  update: integer({ mode: "boolean" }).default(false).notNull(),
-  delete: integer({ mode: "boolean" }).default(false).notNull()
+  canCreate: integer({ mode: "boolean" }).default(false).notNull(),
+  canRead: integer({ mode: "boolean" }).default(false).notNull(),
+  canUpdate: integer({ mode: "boolean" }).default(false).notNull(),
+  canDelete: integer({ mode: "boolean" }).default(false).notNull()
 },
   (table) => [
     primaryKey({ columns: [table.roleId, table.resourceId] }),

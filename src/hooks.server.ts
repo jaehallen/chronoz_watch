@@ -1,11 +1,10 @@
 import { UserAccess } from '$lib/server/controller/permission';
 import { sessionClient } from '$lib/server/controller/session';
-import { fail, redirect, type Handle } from '@sveltejs/kit';
+import { error, fail, redirect, type Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 export const auth: Handle = async ({ event, resolve }) => {
   const token = sessionClient.getSessionToken(event.cookies);
-
   if (!token) {
     event.locals.user = null;
     event.locals.session = null;
@@ -26,27 +25,23 @@ export const auth: Handle = async ({ event, resolve }) => {
 }
 
 export const route: Handle = async ({ event, resolve }) => {
-  const pathname = event.url.pathname;
-  const resource = pathname.replaceAll("/", "");
-
   if (!event.locals.user) {
-    if (pathname === '/login') {
+    if (event.url.pathname === '/login') {
       return resolve(event)
     }
-    redirect(301, '/login')
+    return redirect(301, '/login')
   }
 
-  const userAccess = new UserAccess(event.locals.user, resource)
+  const userAccess = new UserAccess(event.locals.user)
 
-  if (!userAccess.canView(resource)) {
+  if (!userAccess.canView(event.url)) {
     if (userAccess.canView('profile')) {
-      redirect(301, '/profile');
+      return redirect(301, '/profile');
     } else {
-      fail(403);
+      error(403);
     }
   }
-
-  return resolve(event)
+  return await resolve(event)
 }
 
 export const handle: Handle = sequence(auth, route)

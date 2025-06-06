@@ -38,9 +38,9 @@ CREATE TABLE `role_permissions` (
 	`read` integer DEFAULT false NOT NULL,
 	`update` integer DEFAULT false NOT NULL,
 	`delete` integer DEFAULT false NOT NULL,
-	PRIMARY KEY(`role_id`, `resour_id`),
+	PRIMARY KEY(`role_id`, `resource_id`),
 	FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON UPDATE no action ON DELETE cascade,
-	FOREIGN KEY (`resour_id`) REFERENCES `resources`(`id`) ON UPDATE no action ON DELETE cascade
+	FOREIGN KEY (`resource_id`) REFERENCES `resources`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `roles` (

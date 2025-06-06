@@ -1,5 +1,5 @@
 import { tblUsers, tblResources, tblRolePermissions, tblRoles, tblUserJobs, tblUserDepartments, tblSessions } from "./schema";
-import { relations, type InferSelectModel } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 
 export const rltsSession = relations(tblSessions, ({ one }) => {
   return {
