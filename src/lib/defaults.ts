@@ -63,9 +63,9 @@ export const SETTING_PAGES: AppPages[] = [
     id: 'options',
   },
   {
-    resource: 'settings.access',
-    href: "/settings/access",
-    title: "Access",
+    resource: 'settings.permissions',
+    href: "/settings/permissions",
+    title: "Permissions",
     icon: 'admin_panel_settings',
     id: 'access'
   },

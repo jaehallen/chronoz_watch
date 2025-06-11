@@ -20,6 +20,6 @@ export const actions = {
 
     sessionClient.setSessionTokenCookie(cookies, userToken, session.expiresAt)
 
-    redirect(301, "/entries")
+    return redirect(301, "/entries")
   }
 } satisfies Actions;

@@ -1,4 +1,4 @@
-import type { PageServerLoad, RequestEvent } from './$types';
+import type { PageServerLoad } from './$types';
 import type { Actions } from '@sveltejs/kit';
 import type { User } from '$lib/app-types';
 
@@ -14,7 +14,7 @@ const canUpdate = (resource: PermissionResource, user: User | null) => (new User
 
 export const load = (async ({locals: {user}}) => {
   if(!user){
-    redirect(301, "/login");
+    return redirect(301, "/login");
   }
   
   const settingsOptions = await getAppOptions()

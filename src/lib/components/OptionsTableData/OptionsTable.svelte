@@ -84,7 +84,6 @@
 						<td class="no-padding left-padding">
 							<div class="field small fill round no-padding">
 								<input
-									class="tiny-padding"
 									type="text"
 									name={inputNameEdit("description")}
 									placeholder="Description"

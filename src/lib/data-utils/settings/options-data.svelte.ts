@@ -5,6 +5,7 @@ export class OptionsData<T extends OptionsBaseTable> {
     jobs: [],
     departments: [],
     roles: [],
+    time_events: [],
   })
 
   constructor(optionsData: Record<OptionsAppTables, T[]>) {

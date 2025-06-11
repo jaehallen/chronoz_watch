@@ -24,6 +24,7 @@ export type SettingsOptions = {
   jobs: TableJobs[];
   departments: TableDepartments[];
   roles: TableRoles[];
+  time_events: TableTimeEvents[];
 } & {
   [key: string]: OptionsBaseTable[];
 };

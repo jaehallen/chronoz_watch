@@ -1,6 +1,10 @@
 {
+  "http.proxySupport": "off",
   "terminal.integrated.localEchoLatencyThreshold": -1,
   "terminal.integrated.localEchoEnabled": "off",
+  "workbench.editorAssociations": {
+    "*.md": "vscode.markdown.preview.editor"
+  },
   "terminal.integrated.fontSize": 13,
   "workbench.startupEditor": "none",
   "editor.fontFamily": "JetBrains Mono, Menlo, Monaco, Courier New, monospace",
@@ -35,7 +39,6 @@
   },
   "workbench.tree.indent": 12,
   "explorer.compactFolders": false,
-  "svelte.ui.svelteKitFilesContextMenu.enable": "always",
   "workbench.colorTheme": "Monospace Dark",
   "html.format.indentInnerHtml": true,
   "IDX.aI.enableInlineCompletion": true,
@@ -43,12 +46,8 @@
   "editor.lineNumbers": "relative",
   "editor.wordWrap": "off",
   "editor.wordWrapColumn": 120,
-  "[svelte]": {
-    "editor.defaultFormatter": "svelte.svelte-vscode",
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
+  "svelte.enable-ts-plugin": true,
   "svelte.plugin.svelte.defaultScriptLanguage": "ts",
-  "svelte.plugin.svelte.format.config.svelteBracketNewLine": false
+  "svelte.plugin.svelte.format.config.svelteBracketNewLine": false,
+  "svelte.ui.svelteKitFilesContextMenu.enable": "always",
 }

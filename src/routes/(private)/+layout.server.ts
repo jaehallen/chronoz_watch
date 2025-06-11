@@ -6,7 +6,7 @@ import {
 
 export const load = (async ({ locals }) => {
   if (!locals.user) {
-    redirect(301, "/login")
+    return redirect(301, "/login")
   }
 
   const permissions = new Set(Object.keys(locals.user.permissions));

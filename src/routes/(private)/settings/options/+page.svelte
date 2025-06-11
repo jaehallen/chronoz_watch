@@ -29,11 +29,13 @@
       if (result.type === "success" && result.data) {
         const { rows, error } = result.data;
         if (error) {
-          console.log(error);
+          console.error(error);
         } else {
           optData.updateOption(activeOption, rows);
           onConfirm("clear");
         }
+      } else if(result.type === 'error'){
+        console.error(result.error)
       }
       applyAction(result);
     };
