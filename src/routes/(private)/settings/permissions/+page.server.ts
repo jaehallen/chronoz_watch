@@ -35,20 +35,20 @@ export const actions = {
     }
 
     const permissions = await db.select({
-      id: tblResources.id,
-      code: tblResources.code,
       name: tblResources.name,
       description: tblResources.description,
+      roleId: tblRolePermissions.roleId,
+      resourceId: tblRolePermissions.resourceId,
       canCreate: tblRolePermissions.canCreate,
       canRead: tblRolePermissions.canRead,
       canUpdate: tblRolePermissions.canUpdate,
-      canDelete: tblRolePermissions.canDelete,
+      canDelete: tblRolePermissions.canDelete
     })
       .from(tblRolePermissions)
       .leftJoin(tblResources, eq(tblRolePermissions.resourceId, tblResources.id))
       .where(eq(tblRolePermissions.roleId, roleId))
 
-    
-    return {permissions}
+
+    return { permissions }
   }
 } satisfies Actions;

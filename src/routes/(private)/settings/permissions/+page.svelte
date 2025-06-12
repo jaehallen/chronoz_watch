@@ -1,21 +1,20 @@
 <script lang="ts">
-  import type { PageData, SubmitFunction } from "./$types";
-  import {enhance, applyAction} from "$app/forms"
+  import type { PageData, SubmitFunction } from './$types';
+  import { enhance, applyAction } from '$app/forms';
 
   let { data }: { data: PageData } = $props();
-
+  let activeRoleId = $state(1);
   const formOptions: SubmitFunction = () => {
-    return async ({ result}) => {
-      if (result.type === "success" && result.data) {
-        const {permissions } = result.data;
+    return async ({ result }) => {
+      if (result.type === 'success' && result.data) {
+        const { permissions } = result.data;
 
-        console.log(permissions)
-
-      }else if (result.type === "error"){
-        console.error(result.error)
+        console.log(permissions);
+      } else if (result.type === 'error') {
+        console.error(result.error);
       }
-    }
-  }
+    };
+  };
 </script>
 
 <section class="responsive">
@@ -29,7 +28,7 @@
               <nav class="no-space">
                 <div class="field prefix border small left-round">
                   <i>arrow_drop_down</i>
-                  <select name="role_id">
+                  <select name="role_id" bind:value={activeRoleId}>
                     {#each data.roles as role (role.id)}
                       <option value={role.id}>{role.name}</option>
                     {/each}
@@ -40,8 +39,7 @@
                 </button>
               </nav>
             </div>
-            <div class="max">
-            </div>
+            <div class="max"></div>
             <nav class="no-space">
               <button class="border left-round small">
                 <i>add</i>

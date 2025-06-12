@@ -19,6 +19,7 @@ export type TableRoles = typeof tblRoles.$inferSelect;
 export type TableTimeEvents = typeof tblTimeEvents.$inferSelect
 export type TableResources = typeof tblResources.$inferSelect;
 export type TablePermissions = typeof tblRolePermissions.$inferSelect;
+
 export type OptionsBaseTable = TableDepartments | TableJobs | TableRoles | TableTimeEvents;
 export type SettingsOptions = {
   jobs: TableJobs[];
@@ -51,6 +52,8 @@ export interface Session {
   userId: number;
   expiresAt: Date;
 }
+
+export type RolePermission = TablePermissions & Pick<TableResources, "name" | "description">
 
 export type BeerUIFunction = (
   selector?: string | Element,
