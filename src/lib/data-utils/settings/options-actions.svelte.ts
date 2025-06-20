@@ -1,4 +1,7 @@
-import type { OptionsBaseTable, UserAction, UUID, NewOptionsValue } from "$lib/app-types";
+import type { OptionsBaseTable, UserAction, NewOptionsValue } from "$lib/types/app-types";
+import { customId } from "$lib/utils";
+
+
 
 export class OptionsActions {
   private _newOptions: NewOptionsValue[] = $state([]);
@@ -36,7 +39,7 @@ export class OptionsActions {
   }
 
   public addNewOption() {
-    this._newOptions.push({ uuid: crypto.randomUUID(), name: '', code: '', description: '', active: true, locked: true });
+    this._newOptions.push({ cid: customId(), name: '', code: '', description: '', active: true, locked: true });
     this.setActionState()
   }
 
@@ -45,8 +48,8 @@ export class OptionsActions {
     this.setActionState()
   }
 
-  public removeNewOption(uuid: UUID) {
-    this._newOptions = this._newOptions.filter(v => v.uuid !== uuid);
+  public removeNewOption(cid: string) {
+    this._newOptions = this._newOptions.filter(v => v.cid !== cid);
     this.setActionState();
   }
 

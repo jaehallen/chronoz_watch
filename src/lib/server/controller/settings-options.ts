@@ -1,4 +1,4 @@
-import type { SettingsOptions, UserAction } from "$lib/app-types";
+import type { SettingsOptions, UserAction } from "$lib/types/app-types";
 import { z, ZodError } from "zod";
 import { db } from "$lib/server/database/db-client"
 import { tblRoles, tblDepartments, tblJobs, tblTimeEvents } from "$lib/schema/schema";

@@ -1,4 +1,4 @@
-import type { Preferences } from "$lib/app-types";
+import type { Preferences } from "$lib/types/app-types";
 import { sql } from "drizzle-orm";
 import { sqliteTable, integer, text, primaryKey, foreignKey } from "drizzle-orm/sqlite-core";
 
@@ -48,8 +48,8 @@ export const tblResources = sqliteTable("resources", {
 });
 
 export const tblRolePermissions = sqliteTable("role_permissions", {
-  roleId: integer().references(() => tblRoles.id, { onDelete: "cascade" }),
-  resourceId: integer().references(() => tblResources.id, { onDelete: "cascade" }),
+  roleId: integer().references(() => tblRoles.id, { onDelete: "cascade" }).notNull(),
+  resourceId: integer().references(() => tblResources.id, { onDelete: "cascade" }).notNull(),
   canCreate: integer({ mode: "boolean" }).default(false).notNull(),
   canRead: integer({ mode: "boolean" }).default(false).notNull(),
   canUpdate: integer({ mode: "boolean" }).default(false).notNull(),

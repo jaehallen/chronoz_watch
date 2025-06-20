@@ -1,10 +1,11 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
 
-import type {User, Session, BeerUIFunction} from "$lib/app-types";
+import type {User, Session} from "$lib/types/app-types";
+import type { ui as BeerUIFunction } from 'beercss';
 declare global {
 	interface Window {
-		ui: BeerUIFunction
+		ui: typeof BeerUIFunction
 	}
 	namespace App {
 		// interface Error {}

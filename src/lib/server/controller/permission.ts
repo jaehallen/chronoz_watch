@@ -1,4 +1,4 @@
-import type { UserAction, PermissionAction, User } from "$lib/app-types"
+import type { UserAction, PermissionAction, User } from "$lib/types/app-types"
 export type PermissionResource = string | string[] | URL;
 const pathnameToDots = (pathname: string): string => pathname.split('/').filter(Boolean).join('.');
 const ACTIONS_MAP: Record<UserAction, PermissionAction> = {

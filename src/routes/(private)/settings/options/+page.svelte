@@ -1,21 +1,21 @@
 <script lang="ts">
-  import type { AppPages, ConfirmationEvent } from '$lib/app-types';
-  import type { PageData, SubmitFunction } from './$types';
-  import Dialog from '$lib/components/Dialog.svelte';
-  import { OptionsTable } from '$lib/components/OptionsTableData';
-  import { OptionsActions } from '$lib/data-utils/settings/options-actions.svelte';
-  import { goto } from '$app/navigation';
-  import { enhance, applyAction } from '$app/forms';
-  import { OptionsData } from '$lib/data-utils/settings/options-data.svelte';
+  import type { AppPages, ConfirmationEvent } from "$lib/types/app-types";
+  import type { PageData, SubmitFunction } from "./$types";
+  import Dialog from "$lib/components/Dialog.svelte";
+  import { OptionsTable } from "$lib/components/OptionsTableData";
+  import { OptionsActions } from "$lib/data-utils/settings/options-actions.svelte";
+  import { goto } from "$app/navigation";
+  import { enhance, applyAction } from "$app/forms";
+  import { OptionsData } from "$lib/data-utils/settings/options-data.svelte";
 
-  type OptionPage = AppPages<'jobs' | 'departments' | 'roles' | 'time_events'>;
+  type OptionPage = AppPages<"jobs" | "departments" | "roles" | "time_events">;
 
   let dialog: Dialog;
   let { data }: { data: PageData } = $props();
   let activeOption = $state(data.optionsTab[0].id);
   let dialogInfo = $state({
-    title: 'Warning',
-    content: 'You will lose all changes?'
+    title: "Warning",
+    content: "You will lose all changes?",
   });
 
   const optActions = new OptionsActions();
@@ -23,15 +23,15 @@
 
   const formOptions: SubmitFunction = () => {
     return async ({ result }) => {
-      if (result.type === 'success' && result.data) {
+      if (result.type === "success" && result.data) {
         const { rows, error } = result.data;
         if (error) {
           console.error(error);
         } else {
-          optData.updateOption(activeOption, rows);
-          onConfirm('clear');
+          optData.updateOptions(activeOption, rows);
+          onConfirm("clear");
         }
-      } else if (result.type === 'error') {
+      } else if (result.type === "error") {
         console.error(result.error);
       }
       applyAction(result);
@@ -41,37 +41,40 @@
   function onOptionTab(e: Event, option: OptionPage) {
     if (optActions.hasChanges) {
       e.preventDefault();
-      dialogInfo.title = 'Warning';
-      dialogInfo.content = 'You will lose all changes?';
-      dialog.open({ confirmEvent: 'change', value: { option } });
+      dialogInfo.title = "Warning";
+      dialogInfo.content = "You will lose all changes?";
+      dialog.open({ confirmEvent: "change", value: { option } });
     } else {
       activeOption = option.id;
     }
   }
 
   function onClear() {
-    dialogInfo.title = 'Warning';
-    dialogInfo.content = 'You will lose all changes?';
-    dialog.open({ confirmEvent: 'clear' });
+    dialogInfo.title = "Warning";
+    dialogInfo.content = "You will lose all changes?";
+    dialog.open({ confirmEvent: "clear" });
   }
 
   function onSave(option: OptionPage) {
-    dialogInfo.title = 'Warning';
-    dialogInfo.content = 'Do you want to save your changes?';
-    if ('formId' in option) {
+    dialogInfo.title = "Warning";
+    dialogInfo.content = "Do you want to save your changes?";
+    if ("formId" in option) {
       dialog.open({
         activeFormId: option.formId,
-        confirmEvent: 'save',
-        value: { option }
+        confirmEvent: "save",
+        value: { option },
       });
     }
   }
 
-  function onConfirm(confirmEvent: ConfirmationEvent, value?: Record<string, unknown>) {
+  function onConfirm(
+    confirmEvent: ConfirmationEvent,
+    value?: Record<string, unknown>,
+  ) {
     switch (confirmEvent) {
-      case 'clear':
+      case "clear":
         optActions.clearActions();
-      case 'change':
+      case "change":
         if (value) {
           let option = value.option as OptionPage;
           activeOption = option.id;
@@ -112,14 +115,14 @@
         </div>
 
         {#each data.optionsTab as option (option.id)}
-          {#if 'formAction' in option && option.id === activeOption}
+          {#if "formAction" in option && option.id === activeOption}
             <div
-              class={['page padding right', option.id === activeOption ? 'active' : '']}
+              class={["page right", option.id === activeOption ? "active" : ""]}
               id={option.id}
             >
-              <div class="row">
+              <div class="row top-margin">
                 <div class="max"></div>
-                <nav class="no-space">
+                <nav class="group connected">
                   <button
                     class="border left-round small"
                     disabled={!optActions.canCreate}
@@ -144,17 +147,20 @@
                 </nav>
               </div>
               <form
+                class="no-margin"
                 method="POST"
                 use:enhance={formOptions}
-                class="large-height scroll-y"
                 id={String(option.formId)}
-                action={option.formAction?.[optActions.actionState] ?? ''}
+                action={option.formAction?.[optActions.actionState] ?? ""}
               >
-                <OptionsTable
-                  data={optData.table(option.id)}
-                  {optActions}
-                  bind:draft={optActions.dirtyOptions}
-                />
+                <fieldset>
+                  <legend>{option.title}</legend>
+                  <OptionsTable
+                    data={optData.table(option.id)}
+                    {optActions}
+                    bind:draft={optActions.dirtyOptions}
+                  />
+                </fieldset>
               </form>
             </div>
           {/if}
@@ -165,8 +171,7 @@
 </section>
 
 <style lang="css">
-  .scroll-y {
-    overflow-y: auto;
-    overflow-x: hidden;
+  .top-margin {
+    margin-top: var(--margin)
   }
 </style>

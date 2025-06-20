@@ -1,4 +1,4 @@
-import type { OptionsAppTables, OptionsBaseTable } from "$lib/app-types";
+import type { OptionsAppTables, OptionsBaseTable } from "$lib/types/app-types";
 
 export class OptionsData<T extends OptionsBaseTable> {
   private _options: Record<OptionsAppTables, T[]> = $state({
@@ -24,7 +24,7 @@ export class OptionsData<T extends OptionsBaseTable> {
     return this._options[optionName];
   }
 
-  public updateOption(tableName: OptionsAppTables, values: T | T[]) {
+  public updateOptions(tableName: OptionsAppTables, values: T | T[]) {
     if ((Array.isArray(values) && !values.length) || !values || !this._options[tableName]) {
       return;
     }

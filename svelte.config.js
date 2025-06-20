@@ -7,7 +7,18 @@ const config = {
 	// for more information about preprocessors
 	preprocess: vitePreprocess(),
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({
+			platformProxy: {
+				configPath: undefined,
+				environment: undefined,
+				persist: false
+			},
+			fallback: 'plaintext',
+			routes: {
+				include: ['/*'],
+				exclude: ['<all>']
+			},
+		}),
 		csrf: {
 			// checkOrigin: process.env.NODE_ENV === 'development' ? false : true,
 			checkOrigin: false,

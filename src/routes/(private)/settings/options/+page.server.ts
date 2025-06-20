@@ -1,10 +1,11 @@
 import type { PageServerLoad } from './$types';
 import type { Actions } from '@sveltejs/kit';
-import type { User } from '$lib/app-types';
+import type { User } from '$lib/types/app-types';
+import type {PermissionResource} from '$lib/server/controller/permission'
 
 import { getAppOptions } from '$lib/server/controller/settings-options';
 import { fail, redirect } from '@sveltejs/kit';
-import { UserAccess, type PermissionResource } from '$lib/server/controller/permission';
+import { UserAccess} from '$lib/server/controller/permission';
 import { clientDepartments, clientJobs, clientRoles, clientTimeEvents } from '$lib/server/controller/settings-options';
 import { parseRequest } from '$lib/utils'
 import { OPTIONS_TAB } from '$lib/defaults';

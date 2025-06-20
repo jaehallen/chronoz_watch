@@ -1,25 +1,29 @@
 {
     "terminal.integrated.localEchoLatencyThreshold": -1,
     "terminal.integrated.localEchoEnabled": "off",
-    "workbench.editorAssociations": {
-        "*.md": "vscode.markdown.preview.editor"
-    },
-    "workbench.startupEditor": "none",
+    "explorer.compactFolders": false,
+    "explorer.sortOrder": "filesFirst",
+    "files.autoSave": "onFocusChange",
+    "debug.console.fontSize": 12,
+    "inlineChat.mode": "preview",
     "editor.fontFamily": "JetBrains Mono, Menlo, Monaco, Courier New, monospace",
     "editor.fontWeight": "normal",
-    "editor.fontSize": 13,
+    "editor.fontSize": 12,
     "editor.lineHeight": 1.5,
     "editor.letterSpacing": 0,
-    "debug.console.fontSize": 12,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
     "window.commandCenter": false,
     "workbench.preferredDarkColorTheme": "Monospace Dark",
     "workbench.preferredLightColorTheme": "Monospace Dark",
     "workbench.iconTheme": "monospace",
     "window.autoDetectColorScheme": true,
     "workbench.layoutControl.enabled": false,
-    "inlineChat.mode": "preview",
-    "files.autoSave": "onFocusChange",
-    "explorer.sortOrder": "filesFirst",
+    "workbench.tree.indent": 12,
+    "workbench.startupEditor": "none",
+    "workbench.editorAssociations": {
+        "*.md": "vscode.markdown.preview.editor"
+    },
     "workbench.editor.customLabels.patterns": {
         "**/src/routes/**/+layout.svelte": "${dirname} - Layout",
         "**/src/routes/**/+layout.server.ts": "${dirname} - Layout Server",
@@ -34,9 +38,10 @@
         "**/src/routes/**/+layout.js": "${dirname} - Layout Load"
     },
     "svelte.enable-ts-plugin": true,
-    "workbench.tree.indent": 12,
-    "explorer.compactFolders": false,
     "svelte.ui.svelteKitFilesContextMenu.enable": "always",
+    "svelte.plugin.svelte.format.config.svelteBracketNewLine": false,
+    "svelte.ask-to-enable-ts-plugin": false,
     "IDX.aI.enableInlineCompletion": true,
-    "IDX.aI.enableCodebaseIndexing": true
+    "IDX.aI.enableCodebaseIndexing": true,
+    "svelte.plugin.svelte.format.config.printWidth": 120,
 }

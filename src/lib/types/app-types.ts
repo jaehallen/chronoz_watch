@@ -1,5 +1,5 @@
 import type { IBeerCssTheme } from "beercss/src/cdn/interfaces";
-import { tblDepartments, tblJobs, tblResources, tblRoles, tblUsers, tblRolePermissions, tblTimeEvents } from "./schema/schema";
+import { tblDepartments, tblJobs, tblResources, tblRoles, tblUsers, tblRolePermissions, tblTimeEvents } from "../schema/schema";
 
 const APP_RESOURCES = ["profile", "entries", "timesheets", "settings.options", "users", "register"] as const;
 const APP_TABLES = ['users', 'roles', 'jobs', 'departments', 'resources', 'roles', 'time_events'] as const;
@@ -30,6 +30,13 @@ export type SettingsOptions = {
   [key: string]: OptionsBaseTable[];
 };
 
+export interface SettingsTableColumn<T> {
+  key: keyof T;
+  label: string;
+  info?: string;
+  class?: string;
+}
+
 export type Permissions = {
   [key: string]: {
     [key in PermissionAction]: boolean;
@@ -53,7 +60,13 @@ export interface Session {
   expiresAt: Date;
 }
 
-export type RolePermission = TablePermissions & Pick<TableResources, "name" | "description">
+export interface RolePermission extends TablePermissions {
+  name: string | null;
+  description: string | null;
+  [key: string]: any;
+}
+
+// export type RolePermission = TablePermissions & Pick<TableResources, "name" | "description">
 
 export type BeerUIFunction = (
   selector?: string | Element,
@@ -76,8 +89,16 @@ interface FormAppPage<T = string> extends BaseAppPage<T> {
 }
 
 export type AppPages<T = string> = BaseAppPage<T> | FormAppPage<T>;
-export type UUID = ReturnType<typeof crypto.randomUUID>;
 
 export interface NewOptionsValue extends Omit<OptionsBaseTable, "id"> {
-  uuid: UUID;
+  cid: string;
 }
+
+export interface ToastInfo {
+  id: string;
+  message: string;
+  type: "success" | "error" | "info";
+  timeout: number;
+}
+
+export type ToastParams = Omit<ToastInfo, "id">;

@@ -1,3 +1,9 @@
+<script lang="ts">
+  import "material-dynamic-colors";
+  import "beercss/dist/cdn/beer.min.css";
+  import "beercss/dist/cdn/beer.min.js"
+</script>
+
 <main class="responsive">
   <header class="fixed"></header>
   <article class="medium-width center">
@@ -15,5 +21,5 @@
         <button class="button">Login</button>
       </fieldset>
     </form>
-    </article>
+  </article>
 </main>

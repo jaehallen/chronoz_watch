@@ -1,3 +1,7 @@
+import { customAlphabet } from "nanoid";
+
+export const customId = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 8);
+
 export function capitalize(str: string): string {
   if (typeof str !== 'string') {
     str = String(str);
@@ -16,7 +20,7 @@ export function toBoolean(value: unknown): boolean {
   return !isNaN(num) && num > 0;
 }
 
-const keyPattern = /^([^_]+)_(\w{8}-\w{4}-\w{4}-\w{4}-\w{12}|\d+)$/;
+const keyPattern = /^([^_]+)_([a-z0-9]{8})$/;
 
 function parseValue(value: FormDataEntryValue) {
   if (typeof value === 'string') {

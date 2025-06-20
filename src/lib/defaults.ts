@@ -1,4 +1,4 @@
-import type { AppPages } from "./app-types";
+import type { AppPages } from "./types/app-types";
 
 //DICEBREAR LINK FOR AVATAR
 export const AVATAR_SRC = 'https://api.dicebear.com/9.x/initials/svg?seed=Jessica&radius=50&fontWeight=900';

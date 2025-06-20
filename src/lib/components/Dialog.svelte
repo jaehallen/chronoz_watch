@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ConfirmationEvent } from "$lib/app-types";
+	import type { ConfirmationEvent } from "$lib/types/app-types";
 
 	export interface DialogProps {
 		title: string;

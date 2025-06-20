@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AppPages } from "$lib/app-types";
+	import type { AppPages } from "$lib/types/app-types";
 
 	let {
 		currentPage = { href: "/profile", title: "Profile" },
@@ -40,35 +40,35 @@
 {/snippet}
 
 {#snippet settingRoute(route: AppPages)}
-	<a href={route.href}>
-		<i>{route.icon}</i>
-		<span class="max">{route.title}</span>
-	</a>
+	<li class="wave round">
+		<a href={route.href}>
+			<i>{route.icon}</i>
+			<span class="max">{route.title}</span>
+		</a>
+	</li>
 {/snippet}
 
 {#if settingRoutes.length}
-	<dialog
-		class="left no-padding"
-		bind:this={dialog}
-		onmouseleave={() => dialog.close()}>
-		<nav class="drawer">
-			<header>
-				<nav>
-					<i>settings</i>
-					<h6 class="max">Settings</h6>
-					<button class="transparent circle large" onclick={onSettings}>
-						<i>close</i>
-					</button>
-				</nav>
-			</header>
+	<dialog class="left" bind:this={dialog} onmouseleave={() => dialog.close()}>
+		<header>
+			<nav>
+				<i>settings</i>
+				<h6 class="max">Settings</h6>
+				<button class="transparent circle large" onclick={onSettings}>
+					<i>close</i>
+				</button>
+			</nav>
+		</header>
+		<div class="space"></div>
+		<ul class="list">
 			{#each settingRoutes as route}
 				{@render settingRoute(route)}
 			{/each}
-		</nav>
+		</ul>
 	</dialog>
 {/if}
 
-<nav class="m l left">
+<nav class="m l left transparent">
 	<header>
 		<img class="circle" src="/logo.png" alt="chronoz" />
 	</header>
@@ -82,7 +82,7 @@
 		</a>
 	{/if}
 </nav>
-<header class="small-elevate transparent fixed small-blur">
+<header class="small-elevate fixed transparent">
 	<nav>
 		<h6 class="max">{currentPage.title}</h6>
 		<h6>{user.name}</h6>
@@ -104,7 +104,8 @@
 						<input
 							class="button transparent no-padding"
 							type="submit"
-							value="Logout" />
+							value="Logout"
+						/>
 					</form>
 				</li>
 			</menu>

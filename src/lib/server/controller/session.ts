@@ -1,5 +1,5 @@
 import type { Cookies } from "@sveltejs/kit";
-import type { User, Session } from "$lib/app-types";
+import type { User, Session } from "$lib/types/app-types";
 
 import { env } from "$env/dynamic/private";
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
