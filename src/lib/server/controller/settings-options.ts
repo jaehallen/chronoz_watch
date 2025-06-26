@@ -1,11 +1,11 @@
 import type { SettingsOptions, UserAction } from "$lib/types/app-types";
+import { db, type DrizzleClient } from "$lib/server/database/db-client"
 import { z, ZodError } from "zod";
-import { db } from "$lib/server/database/db-client"
 import { tblRoles, tblDepartments, tblJobs, tblTimeEvents } from "$lib/schema/schema";
 import { createSchemaFactory } from "drizzle-zod";
 import { inArray, SQL, sql } from "drizzle-orm";
 
-export type DrizzleClient = typeof db;
+
 
 type BaseOptionsType = typeof tblJobs | typeof tblDepartments | typeof tblRoles | typeof tblTimeEvents;
 type UpdatableFields = Partial<keyof Pick<BaseOptionsType, "id" | "active" | "code" | "name" | "description" | "locked">>;

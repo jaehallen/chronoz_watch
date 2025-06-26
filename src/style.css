@@ -1,0 +1,13 @@
+.hidden {
+  display: none;
+}
+
+.half-space:not(nav, .row, .grid, table, .tooltip, .list, menu, .shape) {
+  block-size: 1.75rem;
+}
+
+.switch.scaled {
+  transform: scale(0.7);
+  /* Adjust the scale as needed */
+  transform-origin: left center;
+}

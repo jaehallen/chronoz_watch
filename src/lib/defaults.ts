@@ -67,7 +67,7 @@ export const SETTING_PAGES: AppPages[] = [
     href: "/settings/permissions",
     title: "Permissions",
     icon: 'admin_panel_settings',
-    id: 'access'
+    id: 'permissions'
   },
   {
     resource: 'settings.alias',
@@ -94,18 +94,18 @@ export const APP_PAGES: AppPages[] = [
     id: 'timesheets'
   },
   {
-    resource: "users",
-    href: "/users",
+    resource: "users_list",
+    href: "/users-list",
     title: "Users",
     icon: 'group',
     id: 'users',
   },
   {
-    resource: "register",
-    href: "/register",
-    title: "Register",
-    icon: 'person_add',
-    id: 'register'
-  }
+    resource: 'schedules',
+    href: "/schedules",
+    title: "Schedules",
+    icon: 'calendar_clock',
+    id: 'schedules'
+  },
 ]
 

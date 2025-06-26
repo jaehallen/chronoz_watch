@@ -9,11 +9,7 @@
 		draft: OptionsBaseTable[]; //based on svelte the property of optActions.dirtyOptions needs to be bindable;
 	}
 
-	let {
-		data,
-		optActions = $bindable(),
-		draft = $bindable(),
-	}: OptionsTableProps = $props();
+	let { data, optActions = $bindable(), draft = $bindable() }: OptionsTableProps = $props();
 	const COLUMNS: SettingsTableColumn<OptionsBaseTable>[] = [
 		{ key: "id", label: "ID", info: "Data ID", class: "center-align width-1" },
 		{ key: "code", label: "Code", info: "Unique code", class: "width-2" },
@@ -23,13 +19,13 @@
 			key: "active",
 			label: "Active",
 			info: "Visibility on dropdown selection",
-			class: "center-align min",
+			class: "center-align width-1",
 		},
 	];
 </script>
 
 <div class="large-height scroll">
-	<table class="border">
+	<table class="border no-space">
 		<thead class="fixed secondary">
 			<tr>
 				{#each COLUMNS as col, i (i)}
@@ -55,9 +51,10 @@
 								>{optActions.dirtyOptions[idxEdit].id}
 								<input type="hidden" name={inputNameEdit("id")} value={row.id} />
 							</td>
-							<td class="no-padding left-padding">
-								<div class="field small fill round no-padding">
+							<td class="tiny-padding">
+								<div class="field small round fill no-padding half-space">
 									<input
+										class="small-padding"
 										type="text"
 										name={inputNameEdit("code")}
 										placeholder="Code"
@@ -65,9 +62,10 @@
 										required />
 								</div>
 							</td>
-							<td class="no-padding left-padding">
-								<div class="field small fill round no-padding">
+							<td class="tiny-padding">
+								<div class="field small round fill no-padding half-space">
 									<input
+										class="small-padding"
 										type="text"
 										name={inputNameEdit("name")}
 										placeholder="Name"
@@ -75,9 +73,10 @@
 										required />
 								</div>
 							</td>
-							<td class="no-padding left-padding">
-								<div class="field small fill round no-padding">
+							<td class="tiny-padding">
+								<div class="field small round fill no-padding half-space">
 									<input
+										class="small-padding"
 										type="text"
 										name={inputNameEdit("description")}
 										placeholder="Description"
@@ -85,23 +84,19 @@
 								</div>
 							</td>
 							<td class="center-align">
-								<input
-									type="hidden"
-									name={inputNameEdit("active")}
-									value={optActions.dirtyOptions[idxEdit].active} />
-								<label class="switch scaled">
-									<input
-										type="checkbox"
-										bind:checked={optActions.dirtyOptions[idxEdit].active} />
-									<span></span>
+								<input type="hidden" name={inputNameEdit("active")} value={optActions.dirtyOptions[idxEdit].active} />
+								<label class="switch icon scaled">
+									<input type="checkbox" bind:checked={optActions.dirtyOptions[idxEdit].active} />
+									<span>
+										<i>close</i>
+										<i>done</i>
+									</span>
 								</label>
 							</td>
 							<td class="center-align width-1">
 								<button
 									class="transparent circle small"
-									onclick={() =>
-										optActions.cancelEdit(optActions.dirtyOptions[idxEdit].id)}
-									><i>cancel</i></button>
+									onclick={() => optActions.cancelEdit(optActions.dirtyOptions[idxEdit].id)}><i>cancel</i></button>
 							</td>
 						{:else}
 							<td class="center-align">{row.id}</td>
@@ -122,50 +117,37 @@
 		</tbody>
 		{#if optActions.newOptions.length > 0}
 			<tbody>
-				{#each optActions.newOptions as newOpt (newOpt.uuid)}
-					{@const inputNameNew = (prefix: string) => `${prefix}_${newOpt.uuid}`}
+				{#each optActions.newOptions as newOpt (newOpt.cid)}
+					{@const inputNameNew = (prefix: string) => `${prefix}_${newOpt.cid}`}
 					<tr>
 						<td class="center-align">-</td>
-						<td>
-							<div class="field fill round small">
-								<input
-									type="text"
-									name={inputNameNew("code")}
-									placeholder="Code"
-									required />
+						<td class="tiny-padding">
+							<div class="field small round fill no-padding medium-space">
+								<input class="small-padding" type="text" name={inputNameNew("code")} placeholder="Code" required />
 							</div>
 						</td>
-						<td>
-							<div class="field fill round small">
-								<input
-									type="text"
-									name={inputNameNew("name")}
-									placeholder="Name"
-									required />
+						<td class="tiny-padding">
+							<div class="field small round fill no-padding medium-space">
+								<input class="small-padding" type="text" name={inputNameNew("name")} placeholder="Name" required />
 							</div>
 						</td>
-						<td>
-							<div class="field fill round small">
-								<input
-									type="text"
-									name={inputNameNew("description")}
-									placeholder="Description" />
+						<td class="tiny-padding">
+							<div class="field small round fill no-padding medium-space">
+								<input class="small-padding" type="text" name={inputNameNew("description")} placeholder="Description" />
 							</div>
 						</td>
 						<td class="center-align">
-							<input
-								type="hidden"
-								name={inputNameNew("active")}
-								value={newOpt.active} />
-							<label class="switch scaled">
+							<input type="hidden" name={inputNameNew("active")} value={newOpt.active} />
+							<label class="switch icon scaled">
 								<input type="checkbox" bind:checked={newOpt.active} />
-								<span></span>
+								<span>
+                  <i>close</i>
+                  <i>done</i>
+                </span>
 							</label>
 						</td>
 						<td class="center-align width-1">
-							<button
-								class="transparent circle small"
-								onclick={() => optActions.removeNewOption(newOpt.uuid)}
+							<button class="transparent circle small" onclick={() => optActions.removeNewOption(newOpt.cid)}
 								><i>delete</i></button>
 						</td>
 					</tr>
@@ -186,14 +168,5 @@
 
 	.width-2 {
 		width: 160px;
-	}
-
-	.switch.scaled {
-		transform: scale(0.75); /* Adjust the scale as needed */
-		transform-origin: left center;
-	}
-
-	.l-cell-apdding {
-		padding-left: 1px;
 	}
 </style>

@@ -1,14 +1,33 @@
 <script lang="ts">
-  import type { TableResources, RolePermission } from "$lib/types/app-types";
+  import { RolePermissionsData, type AvailableResource } from "$lib/data-utils/settings/permissions-data.svelte";
 
   interface ResourceTableProps {
-    permissions: RolePermission[];
-    resources: Pick<TableResources, "id" | "name" | "description">[];
+    permData: RolePermissionsData;
+    availableResource: AvailableResource[];
+    roleId: number;
+    newRoleResource: number[];
   }
+
   const defaultPermission = [1, 2, 5, 6];
-  let { permissions, resources }: ResourceTableProps = $props();
-  let availabedResource = $derived(resources.filter((r) => !permissions.some((p) => p.resourceId === r.id)));
-  let addedResource = $derived(resources.filter((r) => permissions.some((p) => p.resourceId === r.id)));
+
+  let {
+    permData,
+    availableResource = $bindable(),
+    roleId,
+    newRoleResource = $bindable(),
+  }: ResourceTableProps = $props();
+
+  let addedResource = $derived(
+    permData.resources.filter((resource) => permData.rolePermissions.some((p) => p.resourceId === resource.id)),
+  );
+
+  function onChange(resource: AvailableResource) {
+    if (resource.enabled && !newRoleResource.includes(resource.id)) {
+      newRoleResource.push(resource.id);
+    } else if (!resource.enabled && newRoleResource.includes(resource.id)) {
+      newRoleResource.splice(newRoleResource.indexOf(resource.id), 1);
+    }
+  }
 </script>
 
 <table class="border">
@@ -32,14 +51,30 @@
       </tr>
     {/each}
 
-    {#each availabedResource as resource (resource.id)}
+    {#each availableResource as resource (resource.id)}
       {@const isDefault = defaultPermission.includes(resource.id)}
+      {@const inputName = (prefix: string) => `${prefix}_${resource.id}`}
       <tr>
         <td>
-          <label class="checkbox"
-            ><input type="checkbox" name={`resource_${resource.id}`} checked={isDefault} disabled={isDefault} /><span
-            ></span
-            ></label>
+          {#if isDefault}
+            <input type="number" name={inputName("roleId")} value={roleId} hidden />
+            <input type="number" name={inputName("resourceId")} value={resource.id} hidden />
+            <label class="checkbox">
+              <input type="checkbox" checked disabled />
+              <span></span>
+            </label>
+          {:else}
+            <input type="hidden" name={resource.enabled ? inputName("roleId") : ""} value={roleId} hidden />
+            <label class="checkbox">
+              <input
+                type="checkbox"
+                name={resource.enabled ? inputName("resourceId") : ""}
+                bind:checked={resource.enabled}
+                value={resource.id}
+                onchange={() => onChange(resource)} />
+              <span></span>
+            </label>
+          {/if}
         </td>
         <td>{resource.id}</td>
         <td>{resource.name}</td>

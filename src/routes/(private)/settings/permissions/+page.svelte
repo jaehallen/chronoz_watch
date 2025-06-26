@@ -1,45 +1,56 @@
 <script lang="ts">
   import type { PageData, SubmitFunction } from "./$types";
-  import type { RolePermission } from "$lib/types/app-types";
-
-  import { enhance, applyAction } from "$app/forms";
-  import { RolePermissionsData } from "$lib/data-utils/settings/permissions-data.svelte";
+  import type { ConfirmationEvent, RolePermission } from "$lib/types/app-types";
   import { PermissionsTable } from "$lib/components/PermissionsTableData";
   import ResourceTable from "$lib/components/ResourceTable.svelte";
   import ToastNotify, { type ToastParams } from "$lib/components/ToastNotify.svelte";
+  import Dialog from "$lib/components/Dialog.svelte";
 
+  import { enhance, applyAction } from "$app/forms";
+  import { RolePermissionsData } from "$lib/data-utils/settings/permissions-data.svelte";
+
+  const DEFAULT_PERMISSION = [1, 2, 5, 6];
   // svelte-ignore non_reactive_update
   let roleForm: HTMLFormElement;
   let resourceDialog: HTMLDialogElement;
+  let dialog: Dialog;
+  let dialogInfo = $state({
+    title: "Warning",
+    content: "You will lose all changes?",
+  });
 
   let { data }: { data: PageData } = $props();
   let activeRoleId = $state(data.roles[0].id);
   let isBusy = $state(false);
   let isOverlay = $state(false);
+  let newRoleResource = $state([]);
   let toast: ToastNotify;
 
-  const permData = new RolePermissionsData(data?.permissions ?? []);
+  const permData = new RolePermissionsData(data?.permissions, data?.resources);
   let draft = $derived(getUpdatedPermissions(permData.original, permData.rolePermissions));
   let isFullAccess = $derived(permData.rolePermissions.length >= data.resources.length);
+  let isAddResource = $derived(
+    newRoleResource.length > 0 || permData.availableResources.some((r) => DEFAULT_PERMISSION.includes(r.id)),
+  );
 
-  const formOptions: SubmitFunction = () => {
+  const handleFormRequest: SubmitFunction = () => {
     isBusy = true;
     return async ({ result }) => {
       if (result.type === "success" && result.data) {
-        const { permissions } = result.data;
-        permData.rolePermissions = permissions;
+        newRoleResource = [];
+        permData.updatePermissions(result.data.rows ?? []);
       } else {
-        console.error(result);
+        if (result.type === "error") {
+          console.error(result.error);
+        }
+        notify(result);
       }
       isBusy = false;
+      applyAction(result);
     };
   };
 
-  function onClear() {
-    permData.clearUpdates();
-  }
-
-  function getUpdatedPermissions(original: RolePermission[], updated: RolePermission[]): RolePermission[] {
+  function getUpdatedPermissions(updated: RolePermission[], original: RolePermission[]): RolePermission[] {
     const key = (p: RolePermission) => `${p.resourceId}`;
     const originalMap = new Map(original.map((p) => [key(p), p]));
 
@@ -55,49 +66,84 @@
     });
   }
 
+  function closeDialog() {
+    resourceDialog.close();
+  }
+
   function onAddPermission() {
     resourceDialog.show();
     isOverlay = true;
   }
 
-  function closeDialog() {
-    resourceDialog.close();
-  }
-
   function notify(params?: ToastParams) {
     toast.add(params);
   }
+
+  function onSave(formId: string) {
+    dialogInfo.title = "Warning";
+    dialogInfo.content = "Do you want to save your changes?";
+    dialog.open({
+      activeFormId: formId,
+      confirmEvent: "save",
+    });
+  }
+
+  function onClear() {
+    dialogInfo.title = "Warning";
+    dialogInfo.content = "You will lose all changes?";
+    dialog.open({ confirmEvent: "clear" });
+  }
+
+  function onConfirm(confirmEvent: ConfirmationEvent) {
+    switch (confirmEvent) {
+      case "clear":
+        permData.clearUpdates();
+      default:
+        dialog.close();
+    }
+  }
+
+  function onCancel() {
+    dialog.close();
+  }
+
 </script>
 
+<ToastNotify bind:this={toast} />
+<Dialog bind:this={dialog} {...dialogInfo} {onConfirm} {onCancel} />
+
+<div class={["overlay", isOverlay ? "active" : ""]} aria-hidden="true" onclick={closeDialog}></div>
+<dialog class="large right" bind:this={resourceDialog} onclose={() => (isOverlay = false)}>
+  <form action="?/create-permissions" method="POST" use:enhance={handleFormRequest}>
+    <header>
+      <nav>
+        <div class="max">
+          <h5>Resources</h5>
+        </div>
+        <button type="submit" class="small no-round border" disabled={!isAddResource}>Add</button>
+        <button type="button" class="circle transparent" onclick={closeDialog}><i>close</i></button>
+      </nav>
+    </header>
+    <fieldset>
+      <legend>Permissions List</legend>
+      {#key activeRoleId}
+        <ResourceTable
+          {permData}
+          bind:newRoleResource
+          bind:availableResource={permData.availableResources}
+          roleId={activeRoleId} />
+      {/key}
+    </fieldset>
+  </form>
+</dialog>
 <section class="responsive">
-  <ToastNotify bind:this={toast} />
-  <button onclick={() => notify()}>Toast</button>
-  <div class={["overlay", isOverlay ? "active" : ""]} aria-hidden="true" onclick={closeDialog}></div>
-  <dialog class="large right" bind:this={resourceDialog} onclose={() => (isOverlay = false)}>
-    <form action="?/create-permissions">
-      <header>
-        <nav>
-          <div class="max">
-            <h5>Resources</h5>
-          </div>
-          <button type="submit" class="small no-round border">Add</button>
-          <button class="circle transparent" onclick={closeDialog}><i>close</i></button>
-        </nav>
-      </header>
-      <fieldset>
-        <legend>Permissions List</legend>
-        <ResourceTable permissions={permData.rolePermissions} resources={data.resources} />
-      </fieldset>
-    </form>
-  </dialog>
-  <form hidden></form>
   <article class="margin">
     {#if data.roles}
       <fieldset disabled={isBusy}>
         <legend>Roles Permissions</legend>
         <div class="row">
           <div class="max">
-            <form method="POST" action="?/get-permissions" bind:this={roleForm} use:enhance={formOptions}>
+            <form method="POST" action="?/get-permissions" bind:this={roleForm} use:enhance={handleFormRequest}>
               <div class="field label suffix border round small no-margin">
                 <select name="role_id" bind:value={activeRoleId} onchange={() => roleForm.requestSubmit()}>
                   {#each data.roles as role (role.id)}
@@ -117,7 +163,10 @@
               onclick={onAddPermission}>
               <i>add_moderator</i>
             </button>
-            <button class="border no-round small" disabled={!draft.length}>
+            <button
+              class="border no-round small"
+              disabled={!draft.length}
+              onclick={() => onSave("formapp-role_permissions")}>
               <i>save</i>
               {#if draft.length}
                 <span class="badge">{draft.length}</span>
@@ -136,7 +185,9 @@
       {#if isBusy}
         <progress></progress>
       {:else if permData.rolePermissions.length}
-        <PermissionsTable bind:data={permData.rolePermissions} {draft} />
+        <form id="formapp-role_permissions" action="?/update-permissions" method="POST" use:enhance={handleFormRequest}>
+          <PermissionsTable bind:data={permData.rolePermissions} {draft} />
+        </form>
       {:else}
         <h6>No permissions found.</h6>
       {/if}

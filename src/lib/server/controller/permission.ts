@@ -1,6 +1,10 @@
 import type { UserAction, PermissionAction, User } from "$lib/types/app-types"
 export type PermissionResource = string | string[] | URL;
-const pathnameToDots = (pathname: string): string => pathname.split('/').filter(Boolean).join('.');
+const pathnameToDots = (pathname: string): string => pathname
+  .split('/').filter(Boolean)
+  .map(str => str.replaceAll("-", "_"))
+  .join('.');
+  
 const ACTIONS_MAP: Record<UserAction, PermissionAction> = {
   create: 'canCreate',
   read: 'canRead',
@@ -40,7 +44,7 @@ export class UserAccess {
     }
 
     if (val instanceof URL) {
-      const parsed = pathnameToDots(val.pathname).trim();
+      const parsed = pathnameToDots(val.pathname);
       return parsed ? [parsed] : [];
     }
 

@@ -10,6 +10,7 @@ const turso = createClient({
   authToken: env.DB_TOKEN
 });
 
+export type DrizzleClient = typeof db;
 
 export const db = drizzle(turso, {
   schema: { ...schema, ...schemaRelation },

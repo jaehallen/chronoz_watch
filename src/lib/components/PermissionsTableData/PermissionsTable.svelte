@@ -1,8 +1,5 @@
 <script lang="ts">
-  import type {
-    RolePermission,
-    SettingsTableColumn,
-  } from "$lib/types/app-types";
+  import type { RolePermission, SettingsTableColumn } from "$lib/types/app-types";
 
   interface RolePermissionsProps {
     data: RolePermission[];
@@ -10,7 +7,7 @@
   }
 
   let { data = $bindable(), draft }: RolePermissionsProps = $props();
-  let draftIds = $derived(draft.map(item => item.resourceId))
+  let draftIds = $derived(draft.map((item) => item.resourceId));
 
   const COLUMNS: SettingsTableColumn<RolePermission>[] = [
     {
@@ -39,19 +36,19 @@
       info: "Update permission",
       class: "center-align",
     },
-    {
-      key: "canDelete",
-      label: "Delete",
-      info: "Delete permission",
-      class: "center-align",
-    },
+    // {
+    //   key: "canDelete",
+    //   label: "Delete",
+    //   info: "Delete permission",
+    //   class: "center-align",
+    // },
   ];
 </script>
 
 <div class="large-height scroll">
-  <table class="border">
+  <table class="border no-space">
     <thead class="fixed secondary">
-      <tr>
+      <tr class="medium-space">
         {#each COLUMNS as col, i (i)}
           <th class={col.class ?? ""}>
             <span>
@@ -64,13 +61,24 @@
     </thead>
     <tbody>
       {#each data as row (row.resourceId)}
-        <tr class={[draftIds.includes(row.resourceId) ? "secondary-container" : ""]}>
-          <td class="center-align">{row.resourceId}</td>
+        {@const isDraft = draftIds.includes(row.resourceId)}
+        {@const inputNameEdit = (prefix: string) => `${prefix}_${row.resourceId}`}
+        <tr class={[isDraft ? "secondary-container" : ""]}>
+          <td class="center-align">
+            {row.resourceId}
+            {#if isDraft}
+              <input type="hidden" value={row.resourceId} name={inputNameEdit("resourceId")} />
+              <input type="hidden" value={row.roleId} name={inputNameEdit("roleId")} />
+            {/if}
+          </td>
           <td>{row.name}</td>
           <td>{row.description}</td>
-          {#each ["canCreate", "canRead", "canUpdate", "canDelete"] as permAction, i (i)}
+          {#each ["canCreate", "canRead", "canUpdate"] as permAction, i (i)}
             <td class="center-align">
               <label class="switch icon scaled">
+                {#if isDraft}
+                  <input type="hidden" value={row[permAction]} name={inputNameEdit(permAction)} />
+                {/if}
                 <input type="checkbox" bind:checked={row[permAction]} />
                 <span>
                   <i>close</i>
@@ -96,14 +104,5 @@
 
   .width-2 {
     width: 160px;
-  }
-
-  .switch.scaled {
-    transform: scale(0.75); /* Adjust the scale as needed */
-    transform-origin: left center;
-  }
-
-  .l-cell-apdding {
-    padding-left: 1px;
   }
 </style>

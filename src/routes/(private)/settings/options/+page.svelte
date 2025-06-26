@@ -67,10 +67,7 @@
     }
   }
 
-  function onConfirm(
-    confirmEvent: ConfirmationEvent,
-    value?: Record<string, unknown>,
-  ) {
+  function onConfirm(confirmEvent: ConfirmationEvent, value?: Record<string, unknown>) {
     switch (confirmEvent) {
       case "clear":
         optActions.clearActions();
@@ -92,11 +89,7 @@
 </script>
 
 {#snippet optionsTab(option: OptionPage)}
-  <a
-    href={option.href}
-    class:active={option.id === activeOption}
-    onclick={(e) => onOptionTab(e, option)}
-  >
+  <a href={option.href} class:active={option.id === activeOption} onclick={(e) => onOptionTab(e, option)}>
     <i>{option.icon}</i>
     <span>{option.title}</span>
   </a>
@@ -116,32 +109,26 @@
 
         {#each data.optionsTab as option (option.id)}
           {#if "formAction" in option && option.id === activeOption}
-            <div
-              class={["page right", option.id === activeOption ? "active" : ""]}
-              id={option.id}
-            >
+            <div class={["page right", option.id === activeOption ? "active" : ""]} id={option.id}>
               <div class="row top-margin">
                 <div class="max"></div>
                 <nav class="group connected">
                   <button
                     class="border left-round small"
                     disabled={!optActions.canCreate}
-                    onclick={() => optActions.addNewOption()}
-                  >
+                    onclick={() => optActions.addNewOption()}>
                     <i>add</i>
                   </button>
                   <button
                     class="border no-round small"
                     disabled={!optActions.hasChanges}
-                    onclick={() => onSave(option)}
-                  >
+                    onclick={() => onSave(option)}>
                     <i>save</i>
+                    {#if optActions.hasChanges}
+                      <span class="badge">{optActions.countChanges}</span>
+                    {/if}
                   </button>
-                  <button
-                    class="border right-round small"
-                    disabled={!optActions.hasChanges}
-                    onclick={onClear}
-                  >
+                  <button class="border right-round small" disabled={!optActions.hasChanges} onclick={onClear}>
                     <i>delete_sweep</i>
                   </button>
                 </nav>
@@ -151,15 +138,10 @@
                 method="POST"
                 use:enhance={formOptions}
                 id={String(option.formId)}
-                action={option.formAction?.[optActions.actionState] ?? ""}
-              >
+                action={option.formAction?.[optActions.actionState] ?? ""}>
                 <fieldset>
                   <legend>{option.title}</legend>
-                  <OptionsTable
-                    data={optData.table(option.id)}
-                    {optActions}
-                    bind:draft={optActions.dirtyOptions}
-                  />
+                  <OptionsTable data={optData.table(option.id)} {optActions} bind:draft={optActions.dirtyOptions} />
                 </fieldset>
               </form>
             </div>
@@ -172,6 +154,6 @@
 
 <style lang="css">
   .top-margin {
-    margin-top: var(--margin)
+    margin-top: var(--margin);
   }
 </style>

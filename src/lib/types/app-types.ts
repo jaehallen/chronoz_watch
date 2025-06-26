@@ -93,12 +93,3 @@ export type AppPages<T = string> = BaseAppPage<T> | FormAppPage<T>;
 export interface NewOptionsValue extends Omit<OptionsBaseTable, "id"> {
   cid: string;
 }
-
-export interface ToastInfo {
-  id: string;
-  message: string;
-  type: "success" | "error" | "info";
-  timeout: number;
-}
-
-export type ToastParams = Omit<ToastInfo, "id">;

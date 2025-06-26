@@ -20,7 +20,7 @@ export function toBoolean(value: unknown): boolean {
   return !isNaN(num) && num > 0;
 }
 
-const keyPattern = /^([^_]+)_([a-z0-9]{8})$/;
+const keyPattern = /^([^_]+)_([a-z0-9]{1,8})$/;
 
 function parseValue(value: FormDataEntryValue) {
   if (typeof value === 'string') {

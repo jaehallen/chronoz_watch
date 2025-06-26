@@ -38,6 +38,10 @@ export class OptionsActions {
     return this._dirtyOptions.length > 0 || this._newOptions.length > 0;
   }
 
+  get countChanges(): number {
+    return this._dirtyOptions.length + this._newOptions.length;
+  }
+
   public addNewOption() {
     this._newOptions.push({ cid: customId(), name: '', code: '', description: '', active: true, locked: true });
     this.setActionState()
