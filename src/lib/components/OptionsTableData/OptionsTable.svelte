@@ -27,7 +27,7 @@
 <div class="large-height scroll">
 	<table class="border no-space">
 		<thead class="fixed secondary">
-			<tr>
+			<tr class="medium-space">
 				{#each COLUMNS as col, i (i)}
 					<th class={col.class ?? ""}>
 						<span>
@@ -36,7 +36,7 @@
 						</span>
 					</th>
 				{/each}
-				<th class="center-align min">Action</th>
+				<th class="center-align">Action</th>
 			</tr>
 		</thead>
 		<tbody>

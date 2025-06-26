@@ -133,17 +133,17 @@
                   </button>
                 </nav>
               </div>
-              <form
-                class="no-margin"
-                method="POST"
-                use:enhance={formOptions}
-                id={String(option.formId)}
-                action={option.formAction?.[optActions.actionState] ?? ""}>
-                <fieldset>
-                  <legend>{option.title}</legend>
+
+              <fieldset>
+                <legend>{option.title}</legend>
+                <form
+                  method="POST"
+                  use:enhance={formOptions}
+                  id={String(option.formId)}
+                  action={option.formAction?.[optActions.actionState] ?? ""}>
                   <OptionsTable data={optData.table(option.id)} {optActions} bind:draft={optActions.dirtyOptions} />
-                </fieldset>
-              </form>
+                </form>
+              </fieldset>
             </div>
           {/if}
         {/each}
