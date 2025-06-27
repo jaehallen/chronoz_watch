@@ -1,6 +1,6 @@
 import type { Preferences } from "$lib/types/app-types";
 import { sql } from "drizzle-orm";
-import { sqliteTable, integer, text, primaryKey, foreignKey } from "drizzle-orm/sqlite-core";
+import { sqliteTable, integer, text, primaryKey, foreignKey, index, type AnySQLiteColumn } from "drizzle-orm/sqlite-core";
 
 export const tblTimeEvents = sqliteTable("time_events", {
   id: integer().primaryKey(),
@@ -57,6 +57,7 @@ export const tblRolePermissions = sqliteTable("role_permissions", {
 },
   (table) => [
     primaryKey({ columns: [table.roleId, table.resourceId] }),
+    index("role_permissions_role_id_idx").on(table.roleId)
   ]
 );
 
@@ -66,16 +67,16 @@ export const tblUsers = sqliteTable("users", {
   name: text().notNull(),
   roleId: integer().notNull().references(() => tblRoles.id, { onDelete: "cascade" }),
   passwordHash: text().notNull(),
-  supervisorId: integer(),
+  supervisorId: integer().references((): AnySQLiteColumn => tblUsers.id, { onDelete: "set null" }),
+  localTimezone: text().default("Asia/Manila").notNull(),
+  clientTimezone: text().default("Asia/Manila").notNull(),
   lockPassword: integer({ mode: "boolean" }).notNull().default(false),
   preferences: text({ mode: "json" }).notNull().default('{"background": null, "avatar": null, "mode": "light"}').$type<Preferences>(),
   createdAt: text().notNull().default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text().notNull().default(sql`CURRENT_TIMESTAMP`)
-},
-  (table) => [
-    foreignKey({ columns: [table.supervisorId], foreignColumns: [table.id], })
-  ]
-);
+  updatedAt: text().notNull().default(sql`CURRENT_TIMESTAMP`),
+}, (table) => [
+  index("users_role_id_idx").on(table.roleId),
+]);
 
 export const tblUserDepartments = sqliteTable("user_departments", {
   userId: integer().references(() => tblUsers.id, { onDelete: "cascade" }),
@@ -87,8 +88,8 @@ export const tblUserDepartments = sqliteTable("user_departments", {
 );
 
 export const tblUserJobs = sqliteTable("user_jobs", {
-  userId: integer("user_id").references(() => tblUsers.id, { onDelete: "cascade" }),
-  jobId: integer("job_id").references(() => tblJobs.id, { onDelete: "cascade" })
+  userId: integer().references(() => tblUsers.id, { onDelete: "cascade" }),
+  jobId: integer().references(() => tblJobs.id, { onDelete: "cascade" })
 }, (table) => [
   primaryKey({ columns: [table.userId, table.jobId] })
 ]);
@@ -97,4 +98,20 @@ export const tblSessions = sqliteTable("sessions", {
   id: text().primaryKey(),
   userId: integer().references(() => tblUsers.id, { onDelete: "cascade" }),
   expiresAt: integer({ mode: "timestamp" }).notNull(),
-});
+}, (table) => [
+  index("sessions_user_idx").on(table.userId)
+]);
+
+export const tblSchedules = sqliteTable("schedules", {
+  id: integer().primaryKey(),
+  userId: integer().references(() => tblUsers.id, { onDelete: "cascade" }),
+  startDate: text().default(sql`CURRENT_DATE`).notNull(),
+  timeEventId: integer().references(() => tblTimeEvents.id, { onDelete: "cascade" }),
+  startTime: text().default('00:00').notNull(),
+  endTime: text().default('00:00').notNull(),
+  description: text()
+},
+  (table) => [
+    index("schedules_user_date_idx").on(table.userId, table.startDate)
+  ]
+);
